@@ -1,0 +1,6 @@
+
+    <li>{{recipe.title}}
+        <p>"Recipe By:"</p><a href="{% url 'author_detail' recipe.author.id %}">{{ recipe.author }}</a>
+    <p>{{recipe.description}}</p>
+    <p>{{recipe.instructions}}</p>
+    </li>

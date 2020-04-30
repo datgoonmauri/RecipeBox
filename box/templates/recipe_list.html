@@ -1,0 +1,5 @@
+<h1>
+{% for recipe in recipes %}
+    <li><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a>| by {{recipe.author.name}}</li>
+{% endfor %}
+</h1>

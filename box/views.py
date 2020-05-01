@@ -14,7 +14,7 @@ def recipe_detail_view(request, recipe_id):
 
 
 def recipe_list_view(request):
-    recipes = Recipe.objects.all
+    recipes = Recipe.objects.all()
     return render(request, "recipe_list.html", {"recipes": recipes})
 
 

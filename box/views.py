@@ -8,7 +8,7 @@ def index(request):
     return render(request, "index.html", {"author_data": author_data, "recipe_data": recipe_data })
 
 def addauthor(request):
-    html = "addauthorform.html"
+    html = "generic_form.html"
 
     if request.method == "POST":
         form = AddAuthorForm(request.POST)
@@ -19,7 +19,7 @@ def addauthor(request):
     return render(request, html, {"form": form})
 
 def recipeadd(request):
-    html = "recipeaddform.html"
+    html = "generic_form.html"
 
     if request.method == "POST":
         form = AddRecipeForm(request.POST)

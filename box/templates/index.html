@@ -1,0 +1,22 @@
+<h1>
+{% for recipe in recipes %}
+    <p><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a> </p>
+{% endfor %}
+</h1>
+<h1>This is Recipe Box!</h1>
+Have an account ? {{ request.user.is_authenticated }}
+<br>
+{% if user.is_authenticated %}
+  Good Day! {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <a href="{% url 'login' %}">login</a>
+{%endif%}
+<br>
+{% for recipe in recipes %}
+<p><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a> </p>
+{% endfor %}
+<br>
+<p><a href="{% url 'recipeadd' %}">Add Recipe</a></p>
+<br>
+<p><a href="{% url 'addauthor' %}">Add Author</a></p>

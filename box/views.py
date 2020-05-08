@@ -1,39 +1,74 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from box.models import Recipe, Author
-from box.forms import AddRecipeForm, AddAuthorForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
+from box.models import *
+from box.forms import *
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
+
 
 def index(request):
-    author_data = Author.objects.all()
-    recipe_data = Recipe.objects.all()
-    return render(request, "index.html", {"author_data": author_data, "recipe_data": recipe_data })
+	author_data = Author.objects.all()
+	recipe_data = Recipe.objects.all()
+	return render(request, "index.html", {"author_data": author_data, "recipe_data": recipe_data})
 
-def addauthor(request):
-    html = "generic_form.html"
 
+def login_view(request):
     if request.method == "POST":
-        form = AddAuthorForm(request.POST)
-        form.save()
-        return HttpResponseRedirect('/')
-    form = AddAuthorForm()
-
-    return render(request, html, {"form": form})
-
-def recipeadd(request):
-    html = "generic_form.html"
-
-    if request.method == "POST":
-        form = AddRecipeForm(request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+            user = authenticate(
+                request, username=data['username'], password=data['password']
+                )
+            if user:
+                login(request, user)
+                return HttpResponseRedirect(
+                    request.GET.get('next', reverse('homepage'))
+                    )
+    form = LoginForm()
+    return render(request, 'generic_form.html', {'form': form})
 
-            Recipe.objects.create(
-                title=data['title'],
-                author=data['author']
-            )
-            return HttpResponseRedirect('/')
-    form = AddRecipeForm()
-    return render(request, html, {"form": form})
+@login_required()
+def addauthor(request):
+	html = "generic_form.html"
+	form = AddAuthorForm()
+	if request.method == "POST":
+		form = AddAuthorForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			user = User.objects.create_user(
+				username=data['name']
+			)
+			author = Author.objects.create(
+				name=data['name'],bio=data['bio'], user=user)
+			author.save()
+		return HttpResponseRedirect(
+			request.GET.get('next', reverse('homepage')))
 
+	if request.user.is_staff:
+		return render(request, html, {"form": form})
+	return render(request, '')
+
+
+@login_required()
+def recipeadd(request):
+	html = "generic_form.html"
+
+	if request.method == "POST":
+		form = AddRecipeForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+
+			Recipe.objects.create(
+				title=data['title'],
+				author=data['author']
+			)
+			return HttpResponseRedirect(reverse('homepage'))
+	form = AddRecipeForm()
+	return render(request, html, {"form": form})
 
 
 def recipe_detail_view(request, recipe_id):
@@ -52,3 +87,6 @@ def author_detail_view(request, author_id):
     return render(
         request, "author_detail.html", {"author": author, "recipes": recipes}
     )
+def logoutview(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('homepage'))

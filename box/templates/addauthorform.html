@@ -1,3 +1,4 @@
+{% if request.user.is_staff %}
 <form action="/addauthor/" method="post">
     {% csrf_token %}
     {{form.as_p}}

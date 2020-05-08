@@ -3,3 +3,6 @@
     <p><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a> </p>
 {% endfor %}
 </h1>
+<p><a href="{% url 'recipeadd' %}">Add Recipe</a></p>
+<br>
+<p><a href="{% url 'addauthor' %}">Add Author</a></p>

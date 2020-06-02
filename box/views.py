@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.views.generic import UpdateView, DeleteView
 
 from box.models import *
 from box.forms import *
@@ -93,3 +94,17 @@ def author_detail_view(request, author_id):
 def logoutview(request):
     logout(request)
     return HttpResponseRedirect(reverse('homepage'))
+
+
+class RecipeUpdateView(UpdateView):
+    model = Recipe
+    fields = ['title', 'description', 'instructions']
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()  # get the post first
+        if self.request.user == post.author:
+            return True
+        return False

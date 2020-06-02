@@ -1,3 +1,5 @@
+    <a href="/">Home</a>
+
 <h1>
 {% for recipe in recipes %}
     <p><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a> </p>

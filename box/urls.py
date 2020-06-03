@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', views.login_view, name="login"),
     path('logout/', views.logoutview, name="logout"),
     path('recipes/<int:pk>/update/', RecipeUpdateView.as_view(), name="recipeupdate"),
+    path('favorite/<int:recipe_id>/', views.favorite_recipe, name='favorite_recipe'),
 
     # path('admin/', admin.site.urls),
 ]

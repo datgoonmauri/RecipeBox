@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.views.generic import UpdateView, DeleteView
+from django.views.generic import UpdateView, DeleteView, TemplateView
 
 from box.models import *
 from box.forms import *
@@ -86,8 +86,10 @@ def recipe_list_view(request):
 def author_detail_view(request, author_id):
     author = get_object_or_404(Author, pk=author_id)
     recipes = Recipe.objects.filter(author=author_id)
+    viewed_user = User.objects.get(username=author)
+    print('view', viewed_user)
     return render(
-        request, "author_detail.html", {"author": author, "recipes": recipes}
+        request, "author_detail.html", {"author": author, "recipes": recipes, 'viewed_user': viewed_user}
     )
 
 
@@ -103,8 +105,13 @@ class RecipeUpdateView(UpdateView):
     def form_valid(self, form):
         return super().form_valid(form)
 
-    def test_func(self):
-        post = self.get_object()  # get the post first
-        if self.request.user == post.author:
-            return True
-        return False
+
+def favorite_recipe(request, recipe_id):
+    curr_user = request.user
+    print(curr_user)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe.favorite.add(curr_user)
+    return HttpResponseRedirect(reverse('homepage'))
+
+
+

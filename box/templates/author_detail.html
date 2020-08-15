@@ -1,4 +1,5 @@
 
+    <a href="/">Home</a>
 
 <ul>
     <h3>{{author.name}}</h3>
@@ -6,9 +7,17 @@
         {% for recipes in data %}
             {% if recipe.author == author %}
             <a href="{% url 'recipe' id=recipe.id %}">{{recipe.title}}</a>
+
             {% endif %}
         {% endfor %}
 
-
 </ul>
+    <h2>Currently logged in user: {{request.user}}</h2>
+    <h2>Looking profile of: {{viewed_user}}</h2>
+        <h3>Favorite Recipes:</h3>
+    {% for recipe in request.user.fav_recipe.all%}
+        <li>
+            <a href="{% url 'recipe_detail' recipe.id %}">{{recipe.title}}</a>
+        </li>
+    {% endfor%}
 
